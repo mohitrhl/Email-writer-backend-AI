@@ -39,16 +39,21 @@ public class EmailGeneratorService {
         );
 
         // API call
-        String response = webClient.post()
-                .uri(geminiApiUrl + "?key=" + geminiApiKey)
-                .header("Content-Type", "application/json")
-                .bodyValue(requestBody)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        try {
 
-        // Extract and return response
-        return extractResponseContent(response);
+            String response = webClient.post()
+                    .uri(geminiApiUrl + "?key=" + geminiApiKey)
+                    .header("Content-Type", "application/json")
+                    .bodyValue(requestBody)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            return extractResponseContent(response);
+
+        } catch (Exception e) {
+            return "Gemini API temporarily unavailable. Please try again later.";
+        }
     }
 
     private String buildPrompt(EmailRequest emailRequest) {
